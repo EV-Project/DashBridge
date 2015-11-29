@@ -84,7 +84,7 @@ bool pedalProcessMessage (CAN_message_t &message){
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("Dash Display");
+  //Serial.println("Dash Display");
 
   CANbus.begin();
 
@@ -160,17 +160,30 @@ void loop() {
   avgThrottle /= 4;
   avgBrake /= 4;
 
-  Serial.print(avgRPM);
-  Serial.print(",");
-  Serial.print(avgVoltage);
-  Serial.print(",");
-  Serial.print(avgCurrent);
-  Serial.print(",");
-  Serial.print(avgThrottle);
-  Serial.print(",");
-  Serial.print(avgBrake);
 
-  //Serial.print(",");
+  Serial.print("U*"); //A header
+  Serial.print("A");  //a token to indicate the message payload
+  Serial.print(avgRPM);
+  Serial.println("");
+
+  Serial.print("U*"); //A header
+  Serial.print("B");  //a token to indicate the message payload
+  Serial.print(avgVoltage);
+  Serial.println("");
+
+  Serial.print("U*"); //A header
+  Serial.print("C");  //a token to indicate the message payload
+  Serial.print(avgCurrent);
+  Serial.println("");
+
+  Serial.print("U*"); //A header
+  Serial.print("D");  //a token to indicate the message payload
+  Serial.print(avgThrottle);
+  Serial.println("");
+
+  Serial.print("U*"); //A header
+  Serial.print("E");  //a token to indicate the message payload
+  Serial.print(avgBrake);
   Serial.println("");
 
 }
