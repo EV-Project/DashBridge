@@ -18,16 +18,14 @@
 
 //pull the constants out of ChallengerEV.h
 
-const uint32_t dashID1 = wheel[1].dashID;   //telemetry messages from the wheel manager
-const uint32_t dashID2 = wheel[2].dashID;    //telemetry messages from the wheel manager
-const uint32_t dashID3 = wheel[3].dashID;   //telemetry messages from the wheel manager
-const uint32_t dashID4 = wheel[4].dashID;   //telemetry messages from the wheel manager
+const uint32_t dashID1 = wheel[0].dashID;   //telemetry messages from the wheel manager
+const uint32_t dashID2 = wheel[1].dashID;    //telemetry messages from the wheel manager
+const uint32_t dashID3 = wheel[2].dashID;   //telemetry messages from the wheel manager
+const uint32_t dashID4 = wheel[3].dashID;   //telemetry messages from the wheel manager
 const uint32_t pedalID = pedalID;           //telemetry messages from the wheel manager
 
 FlexCAN CANbus(1000000);
 CANcallbacks canbus(&CANbus);
-
-
 
 
 struct WheelStats{
@@ -62,16 +60,16 @@ bool wheelnProcessMessage(int n, CAN_message_t &message){
 }
 
 bool wheel1ProcessMessage (CAN_message_t &message){
-  return wheelnProcessMessage(1, message);
+  return wheelnProcessMessage(0, message);
 }
 bool wheel2ProcessMessage (CAN_message_t &message){
-  return wheelnProcessMessage(2, message);
+  return wheelnProcessMessage(1, message);
 }
 bool wheel3ProcessMessage (CAN_message_t &message){
-  return wheelnProcessMessage(3, message);
+  return wheelnProcessMessage(2, message);
 }
 bool wheel4ProcessMessage (CAN_message_t &message){
-  return wheelnProcessMessage(4, message);
+  return wheelnProcessMessage(3, message);
 }
 bool pedalProcessMessage (CAN_message_t &message){
   //placeholder
@@ -115,10 +113,10 @@ void setup() {
   
 
   CANbus.setFilter(dashFilter1,0);
-  CANbus.setFilter(dashFilter2,0);
-  CANbus.setFilter(dashFilter3,0);
-  CANbus.setFilter(dashFilter4,0);
-  CANbus.setFilter(pedalFilter,0);
+  CANbus.setFilter(dashFilter2,1);
+  CANbus.setFilter(dashFilter3,2);
+  CANbus.setFilter(dashFilter4,3);
+  CANbus.setFilter(pedalFilter,4);
 
 //fill the remaining filters to prevent ack.
   for (int i = 5; i < 8; ++i)
@@ -161,6 +159,14 @@ void loop() {
   avgBrake /= 4;
 
 
+  //avgRPM = 300;
+  //avgVoltage = 110;
+  //avgCurrent = 30;
+  //avgThrottle = 50;
+  //avgBrake = 0;
+
+
+
   Serial.print("U*"); //A header
   Serial.print("A");  //a token to indicate the message payload
   Serial.print(avgRPM);
@@ -179,6 +185,10 @@ void loop() {
   Serial.print("U*"); //A header
   Serial.print("D");  //a token to indicate the message payload
   Serial.print(avgThrottle);
+  //for(int i=0; i<nWheels; i++){
+  //  Serial.print(",");
+  //  Serial.print(wheelstats[i].throttle);
+  //}
   Serial.println("");
 
   Serial.print("U*"); //A header
